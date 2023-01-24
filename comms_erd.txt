@@ -1,0 +1,434 @@
+// tablename - app-service
+// emails - Sendgrid
+// notarize - notarize.com
+// tickets -  zendesk
+// messages - twilio_sms
+// chats - chime?
+// call - zoom
+Table comms.application {
+  id uuid [pk]
+  user_id uuid
+  application_name varchar
+  status integer
+  create_date timestamp
+  modified_date timestamp
+}
+
+Table comms.events {
+  id uuid [pk]
+  ticket_id uuid
+  user_id uuid
+  create_date timestamp
+  modified_date timestamp
+}
+
+Table comms.emails {
+  id uuid [pk]
+  events_id uuid
+  from varchar
+  to varchar
+  cc_bcc varchar
+  subject varchar
+  messages text
+  status smallint
+  attachment varchar
+  sender_id varchar  
+  create_date timestamp
+  modified_date timestamp
+}
+
+Table comms.email_thread {
+  id uuid [pk]
+  email_id uuid
+  from varchar
+  to varchar
+  cc_bcc varchar
+  subject varchar
+  messages text
+  status smallint
+  attachment varchar
+  sender_id varchar
+  create_date timestamp
+  modified_date timestamp
+}
+Table comms.ticket {
+  id uuid [pk]
+  events_id uuid
+  url varchar
+  external_id varchar
+  from varchar
+  to varchar
+  subject varchar
+  description text
+  priority_level smallint
+  status smallint
+  recipient varchar
+  requester_id integer
+  submitter_id integer
+  assignee_id integer
+  organization_id integer
+  group_id integer
+  collaborator_ids varchar
+  follower_ids varchar
+  email_cc_ids varchar
+  forum_topic_id integer
+  problem_id integer
+  has_incidents boolean
+  is_public boolean
+  due_at timestamp
+  tags varchar
+  custom_fields varchar
+  satisfaction_rating smallint
+  sharing_agreement_ids varchar
+  custom_status_id integer
+  fields varchar
+  followup_ids varchar
+  ticket_form_id integer
+  brand_id integer
+  allow_channelback boolean
+  allow_attachments boolean
+  attachment varchar
+  sender_id varchar
+  create_date timestamp
+  modified_date timestamp
+}
+
+Table comms.notarize {
+  id uuid [pk]
+  events_id uuid
+  data_id varchar
+  transaction_name varchar
+  message_to_signer varchar
+  document_id uuid
+  create_date timestamp
+  modified_date timestamp
+}
+
+Table comms.document {
+  id uuid [pk]
+  allowed_action varchar
+  bundle_position integer
+  completion_state smallint
+  document_name varchar
+  esign_required boolean
+  identity_confirmation_required boolean
+  notarization_required boolean
+  processing_state smallint
+  requirement varchar
+  signer_id uuid
+  signing_designation_groups varchar
+  signing_designations varchar
+  vaulted boolean
+  payer_id uuid
+  create_date timestamp
+  modified_date timestamp
+}
+Table comms.signer_information {
+  id uuid [pk]
+  email varchar
+  first_name integer
+  transaction_access_link text
+  sdk_token text
+  link_expired boolean
+  address varchar
+  vesting_type smallint
+  signatory_capacities varchar
+  signing_status smallint
+  create_date timestamp
+  modified_date timestamp
+}
+
+Table comms.document_signer {
+  id uuid [pk]
+signer_id uuid
+document_id uuid
+}
+
+Table comms.payer {
+  id uuid [pk]
+  payer smallint
+  signer_id uuid
+  detailed_status smallint
+  attachments varchar
+  create_date timestamp
+  modified_date timestamp
+}
+
+Table comms.messages {
+  id uuid [pk]
+  events_id uuid
+  from varchar
+  to varchar
+  body varchar
+  number_segments varchar
+  direction varchar
+  date_updated timestamp
+  price varchar
+  error_message varchar
+  uri varchar
+  account_sid varchar
+  number_media uuid
+  status smallint
+  messaging_service_sid varchar
+  sid varchar
+  date_sent timestamp
+  error_code varchar
+  price_unit smallint
+  api_version varchar
+  subresource_uris_media varchar
+  create_date timestamp
+  modified_date timestamp
+}
+
+Table comms.conversation_api {
+  id uuid [pk]
+  messages_id uuid
+  account_sid varchar
+  chat_service_sid varchar
+  messaging_service_sid varchar
+  friendly_name varchar
+  unique_name varchar
+  attributes varchar
+  state varchar
+  timer varchar
+  url varchar
+  link_participants varchar
+  link_messages varchar
+  link_webhooks varchar
+  link_bindings varchar
+  sid uuid
+  create_date timestamp
+  modified_date timestamp
+}
+
+Table comms.participation_conversation {
+  id uuid [pk]
+  conversation_api_id uuid
+  accountSid uuid
+  conversation_sid uuid
+  sid uuid
+  identity varchar
+  attributes varchar
+  messaging_binding varchar
+  role_sid uuid
+  url varchar
+  last_read_message_index varchar
+  last_read_timestamp timestamp
+  create_date timestamp
+  modified_date timestamp
+}
+
+Table comms.chats {
+  id uuid [pk]
+  events_id uuid
+  account_sid uuid
+  conversation_sid uuid
+  sid uuid
+  identity varchar
+  attributes varchar
+  messaging_binding varchar
+  role_sid uuid
+  url varchar
+  last_read_message_index varchar
+  last_read_timestamp timestamp
+  create_date timestamp
+  modified_date timestamp
+}
+Table comms.parameters {
+  id uuid [pk]
+  page_size integer
+  next_page_token varchar
+  from varchar
+  to varchar
+  meeting_start_time varchar
+}
+Table comms.meetings {
+  id uuid [pk]
+  account_name varchar
+  archive_files varchar
+  download_url varchar
+  file_extension varchar
+  file_path varchar
+  file_size integer
+  file_type varchar
+  id_id varchar
+  individual boolean
+  participant_email varchar
+  participant_join_time varchar
+  participant_leave_time varchar
+  recording_type varchar
+  status varchar
+  encryption_fingerprint varchar
+  number_of_messages varchar
+  complete_time varchar
+  duration varchar
+  duration_in_second varchar
+  host_id varchar
+  meet_id integer
+  is_breakout_room boolean
+  meeting_type varchar
+  parent_meeting_id varchar
+  recording_count integer
+  start_time varchar
+  timezone varchar
+  topic varchar
+  total_size varchar
+  type integer
+  unique_id varchar
+  next_page_token varchar
+  page_size integer
+  total_records integer
+}
+Table comms.user_meeting {
+  id uuid [pk]
+  user_id varchar
+  meeting_type varchar
+  page_size integer
+  next_page_token varchar
+  page_number integer
+}
+Table comms.meeting_objects {
+  id uuid [pk]
+  agenda varchar
+  created_at varchar
+  duration integer
+  host_id varchar
+  meeting_id integer
+  join_url varchar
+  pmi varchar
+  start_time varchar
+  timezone varchar
+  topic varchar
+}
+Table scheuduled_meeting {
+  id uuid [pk]
+  assistant_id varchar
+  host_email varchar
+  meeting_id integer
+  registration_url varchar
+  agenda varchar
+  created_at varchar
+  duration integer
+  h323_password varchar
+  join_url varchar
+  occurrences integer
+  occurrence_id varchar
+  start_time varchar
+  status varchar
+  meeting_password varchar
+  pmi varchar
+  pre_schedule boolean
+  recurrence varchar
+  end_times integer
+  monthly_day integer
+  monthly_week integer
+  monthly_week_day integer
+  repeat_interval integer
+  recurrentce_type integer
+  weekly_days varchar
+}
+Table comms.meet_settings {
+  id uuid [pk]
+  allow_multiple_devices boolean
+  alternative_hosts varchar
+  alternative_hosts_email_notification boolean
+  alternative_host_update_polls boolean
+  approval_type integer
+  approved_or_denied_countries_or_regions varchar
+  approved_list varchar
+  denied_list varchar
+  enable boolean
+  method varchar
+  audio varchar
+  authentication_domains varchar
+  authentication_exception varchar
+  authentication_name varchar
+  authentication_option varchar
+  auto_recording varchar
+  breakout_room boolean
+  rooms varchar
+  participants varchar
+  calendar_type integer
+  close_registration boolean
+  cn_meeting boolean
+  contact_email varchar
+  contact_name varchar
+  custom_keys varchar
+  email_notification varchar
+  encryption_type varchar
+  enforce_login boolean
+  enforce_login_domains boolean
+  focus_mode boolean
+  global_dial_in_countries varchar
+  global_dial_in_numbers varchar
+  host_video boolean
+  in_meeting boolean
+  jbh_time integer
+  join_before_host boolean
+  language_interpretation varchar
+  interpreters varchar
+  meeting_authentication boolean
+  mute_upon_entry boolean
+  participant_video boolean
+  private_meeting boolean
+  registrants_confirmation_email boolean
+  registrants_email_notification boolean
+  registration_type integer
+  show_share_button boolean
+  use_pmi boolean
+  waiting_room boolean
+  watermark boolean
+  host_save_video_order boolean
+  start_time varchar
+  start_url varchar
+  timezone varchar
+  topic varchar
+  tracking_fields varchar
+}
+
+Table comms.meet_recording {
+  id uuid [pk]
+  meeting_id varchar
+  action varchar
+  include_fields varchar
+  ttl integer
+  duration integer
+  host_id varchar
+  recording_count integer
+  start_time varchar
+  topic varchar
+  total_size integer
+  unique_id varchar
+  recording_files varchar
+  deleted_time varchar
+  download_url varchar
+  file_path varchar
+  file_size varchar
+  file_type varchar
+  file_extension varchar
+  recoding_id varchar
+  play_url varchar
+  recording_end varchar
+  recording_start varchar
+  recording_type varchar
+  status varchar
+  download_access_token varchar
+  password varchar
+  recording_play_passcode varchar
+  participant_audio_files varchar
+  
+}
+
+
+
+Ref: comms.participation_conversation.conversation_api_id > comms.conversation_api.id
+Ref: comms.conversation_api.messages_id > comms.messages.id
+Ref: comms.events.id > comms.messages.events_id
+Ref: comms.document.payer_id > comms.payer.id
+Ref: comms.document_signer.signer_id > comms.signer_information.id
+Ref: comms.document_signer.document_id > comms.document.id
+Ref: comms.document.id - comms.notarize.events_id
+Ref: comms.events.id - comms.notarize.events_id
+Ref: comms.emails.id < comms.email_thread.email_id
+Ref: comms.events.id > comms.emails.events_id
+Ref: comms.events.ticket_id > comms.ticket.id
