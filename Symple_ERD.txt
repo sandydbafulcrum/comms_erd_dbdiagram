@@ -1,0 +1,374 @@
+
+
+//Queue
+
+Table "main"."executions" {
+  "id" uuid [pk, not null, default: `uuid_generate_v4()`]
+  "createdById" uuid
+  "updatedById" uuid
+  "deletedById" uuid
+  "createdAt" timestamp [default: `now()`]
+  "updatedAt" timestamp [default: `now()`]
+  "deletedAt" timestamp
+  "data" jsonb [not null]
+  "pipelineId" uuid [not null]
+}
+
+Table "main"."job_preset_types" {
+  "id" uuid [pk, not null, default: `uuid_generate_v4()`]
+  "createdById" uuid
+  "updatedById" uuid
+  "deletedById" uuid
+  "createdAt" timestamp [default: `now()`]
+  "updatedAt" timestamp [default: `now()`]
+  "deletedAt" timestamp
+}
+
+Table "main"."job_presets" {
+  "id" uuid [pk, not null, default: `uuid_generate_v4()`]
+  "createdById" uuid
+  "updatedById" uuid
+  "deletedById" uuid
+  "createdAt" timestamp [default: `now()`]
+  "updatedAt" timestamp [default: `now()`]
+  "deletedAt" timestamp
+  "name" "character varying" [unique]
+  "s3Link" "character varying"
+  "jobPresetTypeId" uuid [not null]
+  "jobPresetId" uuid
+}
+
+Table "main"."jobs" {
+  "id" uuid [pk, not null, default: `uuid_generate_v4()`]
+  "createdById" uuid
+  "updatedById" uuid
+  "deletedById" uuid
+  "createdAt" timestamp [default: `now()`]
+  "updatedAt" timestamp [default: `now()`]
+  "deletedAt" timestamp
+  "status" "character varying" [not null]
+  "jobEventId" "character varying" [not null]
+  "jobKey" "character varying" [not null]
+  "versionNo" integer [not null, default: 1]
+  "workerTypeIds" json [not null]
+  "isAutoAssign" boolean [not null, default: false]
+  "isReAssignable" boolean [not null, default: false]
+  "userId" "character varying" [not null, default: false]
+  "assigneeId" uuid
+  "pipelineTemplateId" uuid [not null]
+  "executionId" uuid [not null]
+  "workerId" uuid
+}
+
+Table "main"."migrations" {
+  "id" integer [pk, not null, default: `nextval('main.migrations_id_seq'::regclass)`]
+  "timestamp" bigint [not null]
+  "name" "character varying" [not null]
+}
+
+Table "main"."pipeline_presets" {
+  "id" uuid [pk, not null, default: `uuid_generate_v4()`]
+  "createdById" uuid
+  "updatedById" uuid
+  "deletedById" uuid
+  "createdAt" timestamp [default: `now()`]
+  "updatedAt" timestamp [default: `now()`]
+  "deletedAt" timestamp
+  "name" "character varying" [not null]
+  "versionNo" integer [not null, default: 1]
+  "pipelineTemplateFlow" jsonb [not null]
+}
+
+Table "main"."pipeline_templates" {
+  "id" uuid [pk, not null, default: `uuid_generate_v4()`]
+  "createdById" uuid
+  "updatedById" uuid
+  "deletedById" uuid
+  "createdAt" timestamp [default: `now()`]
+  "updatedAt" timestamp [default: `now()`]
+  "deletedAt" timestamp
+  "name" "character varying" [not null]
+  "versionNo" integer [not null, default: 1]
+  "isActive" boolean [not null, default: true]
+  "entryJobKey" "character varying" [not null]
+  "pipelineTemplateFlow" jsonb [not null]
+  "pipelineId" uuid [not null]
+}
+
+Table "main"."pipelines" {
+  "id" uuid [pk, not null, default: `uuid_generate_v4()`]
+  "createdById" uuid
+  "updatedById" uuid
+  "deletedById" uuid
+  "createdAt" timestamp [default: `now()`]
+  "updatedAt" timestamp [default: `now()`]
+  "deletedAt" timestamp
+  "name" "character varying" [unique, not null]
+  "description" "character varying"
+}
+
+Table "main"."reports" {
+  "id" uuid [pk, not null, default: `uuid_generate_v4()`]
+  "createdById" uuid
+  "updatedById" uuid
+  "deletedById" uuid
+  "createdAt" timestamp [default: `now()`]
+  "updatedAt" timestamp [default: `now()`]
+  "deletedAt" timestamp
+  "name" "character varying" [not null]
+  "description" "character varying"
+  "data" jsonb [not null]
+}
+
+Table "main"."worker_matrix" {
+  "id" uuid [pk, not null, default: `uuid_generate_v4()`]
+  "createdById" uuid
+  "updatedById" uuid
+  "deletedById" uuid
+  "createdAt" timestamp [default: `now()`]
+  "updatedAt" timestamp [default: `now()`]
+  "deletedAt" timestamp
+  "isVerified" boolean [not null, default: false]
+  "userId" "character varying" [default: false]
+  "workerId" uuid [not null]
+  "workerTypeId" uuid [not null]
+}
+
+Table "main"."worker_types" {
+  "id" uuid [pk, not null, default: `uuid_generate_v4()`]
+  "createdById" uuid
+  "updatedById" uuid
+  "deletedById" uuid
+  "createdAt" timestamp [default: `now()`]
+  "updatedAt" timestamp [default: `now()`]
+  "deletedAt" timestamp
+  "type" "character varying" [unique]
+}
+
+Table "main"."workers" {
+  "id" uuid [pk, not null, default: `uuid_generate_v4()`]
+  "createdById" uuid
+  "updatedById" uuid
+  "deletedById" uuid
+  "createdAt" timestamp [default: `now()`]
+  "updatedAt" timestamp [default: `now()`]
+  "deletedAt" timestamp
+  "email" "character varying" [unique, not null]
+  "userId" "character varying" [not null, default: false]
+}
+
+Ref "FK_3b861c43e4b740eb966383b07d1":"main"."pipelines"."id" < "main"."executions"."pipelineId" [update: no action, delete: cascade]
+
+Ref "FK_bd0ba035e85e4815ad0d3f4b5ba":"main"."job_preset_types"."id" < "main"."job_presets"."jobPresetId" [update: no action, delete: cascade]
+
+Ref "FK_231a638ca067dfd9c952c0952ce":"main"."pipeline_templates"."id" < "main"."jobs"."pipelineTemplateId" [update: no action, delete: cascade]
+
+Ref "FK_3c86404532c6c74e32b04145dcb":"main"."executions"."id" < "main"."jobs"."executionId" [update: no action, delete: cascade]
+
+Ref "FK_b003c3e96d524079907b0248c7e":"main"."workers"."id" < "main"."jobs"."workerId" [update: no action, delete: cascade]
+
+Ref "FK_3927d458d307185c2a08c179857":"main"."pipelines"."id" < "main"."pipeline_templates"."pipelineId" [update: no action, delete: cascade]
+
+Ref "FK_10126836d57c69afbcd775e97a7":"main"."workers"."id" < "main"."worker_matrix"."workerId" [update: no action, delete: cascade]
+
+Ref "FK_8412c1c98ac548dd396df388f09":"main"."worker_types"."id" < "main"."worker_matrix"."workerTypeId" [update: no action, delete: cascade]
+
+// tablename - app-service
+// emails - Sendgrid
+// notarize - notarize.com
+// tickets -  zendesk
+// messages - twilio_sms
+// chats - chime?
+// call - zoom
+
+Table comms.events {
+  id uuid [pk]
+  ticket_id uuid
+  user_id uuid
+  create_date timestamp
+  modified_date timestamp
+}
+
+Table comms.emails {
+  id uuid [pk]
+  events_id uuid
+  from varchar
+  to varchar
+  cc_bcc varchar
+  subject varchar
+  messages text
+  status smallint
+  attachment varchar
+  sender_id varchar  
+  create_date timestamp
+  modified_date timestamp
+}
+
+Table comms.ticket {
+  id uuid [pk]
+  events_id uuid
+  url varchar
+  external_id varchar
+  from varchar
+  to varchar
+  subject varchar
+  description text
+  priority_level smallint
+  status smallint
+  recipient varchar
+  requester_id integer
+  submitter_id integer
+  assignee_id integer
+  organization_id integer
+  group_id integer
+  collaborator_ids varchar
+  follower_ids varchar
+  email_cc_ids varchar
+  forum_topic_id integer
+  problem_id integer
+  has_incidents boolean
+  is_public boolean
+  due_at timestamp
+  tags varchar
+  custom_fields varchar
+  satisfaction_rating smallint
+  sharing_agreement_ids varchar
+  custom_status_id integer
+  fields varchar
+  followup_ids varchar
+  ticket_form_id integer
+  brand_id integer
+  allow_channelback boolean
+  allow_attachments boolean
+  attachment varchar
+  sender_id varchar
+  create_date timestamp
+  modified_date timestamp
+}
+
+Table comms.notarize {
+  id uuid [pk]
+  events_id uuid
+  data_id varchar
+  transaction_name varchar
+  message_to_signer varchar
+  document_id uuid
+  create_date timestamp
+  modified_date timestamp
+}
+
+Table comms.document {
+  id uuid [pk]
+  allowed_action varchar
+  bundle_position integer
+  completion_state smallint
+  document_name varchar
+  esign_required boolean
+  identity_confirmation_required boolean
+  notarization_required boolean
+  processing_state smallint
+  requirement varchar
+  signer_id uuid
+  signing_designation_groups varchar
+  signing_designations varchar
+  vaulted boolean
+  payer_id uuid
+  create_date timestamp
+  modified_date timestamp
+}
+
+Table comms.document_signer {
+  id uuid [pk]
+signer_id uuid
+document_id uuid
+}
+
+Table comms.messages {
+  id uuid [pk]
+  events_id uuid
+  from varchar
+  to varchar
+  body varchar
+  number_segments varchar
+  direction varchar
+  date_updated timestamp
+  price varchar
+  error_message varchar
+  uri varchar
+  account_sid varchar
+  number_media uuid
+  status smallint
+  messaging_service_sid varchar
+  sid varchar
+  date_sent timestamp
+  error_code varchar
+  price_unit smallint
+  api_version varchar
+  subresource_uris_media varchar
+  create_date timestamp
+  modified_date timestamp
+}
+
+Table comms.chats {
+  id uuid [pk]
+  events_id uuid
+  account_sid uuid
+  conversation_sid uuid
+  sid uuid
+  identity varchar
+  attributes varchar
+  messaging_binding varchar
+  role_sid uuid
+  url varchar
+  last_read_message_index varchar
+  last_read_timestamp timestamp
+  create_date timestamp
+  modified_date timestamp
+}
+
+Ref: comms.events.id > comms.messages.events_id
+Ref: comms.document_signer.document_id > comms.document.id
+Ref: comms.document.id - comms.notarize.events_id
+Ref: comms.events.id - comms.notarize.events_id
+Ref: comms.events.id > comms.emails.events_id
+Ref: comms.events.ticket_id > comms.ticket.id
+
+Table bda.user {
+  id uuid [pk]
+  user_id uuid
+}
+Table bda.organization {
+  id uuid [pk]
+  user_id uuid
+  organization_id uuid
+}
+Table bda.role {
+  id uuid [pk]
+  organization_id uuid
+  role_id uuid
+}
+Table bda.permission {
+  id uuid [pk]
+  permission_id uuid
+  role_id uuid
+}
+Table bda.session {
+  id uuid [pk]
+  session_id uuid
+  user_id uuid
+}
+Table bda.action {
+  id uuid [pk]
+  permission_id uuid
+  user_id uuid
+}
+
+
+Ref: bda.user.user_id < comms.events.user_id
+Ref: bda.user.user_id < bda.organization.user_id
+Ref: bda.organization.user_id < bda.role.role_id
+
+Ref: bda.user.user_id - main.workers.userId
+Ref: bda.user.user_id < bda.session.user_id
+Ref: bda.role.role_id < bda.permission.role_id
+Ref: bda.permission.permission_id < bda.action.permission_id
